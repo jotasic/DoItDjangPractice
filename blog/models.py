@@ -13,3 +13,6 @@ class Post(models.Model):
     def __str__(self):
         return f"[{self.pk}] {self.title}"
     # author : 추후 작성
+
+    def get_absolute_url(self):
+        return f'/blog/{self.pk}/'

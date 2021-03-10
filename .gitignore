@@ -134,3 +134,6 @@ dmypy.json
 .vscode/*
 *.code-workspace
 
+
+# User Added
+_media/

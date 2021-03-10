@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     # CBV 방식으로 구현
     path('', views.PostList.as_view()),

@@ -123,6 +123,6 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-
+# 그림 뿐만 아니라, 모든 파일을 의미한다.
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')

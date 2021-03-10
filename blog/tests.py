@@ -5,6 +5,8 @@ from .models import Post
 
 
 class TestView(TestCase):
+
+
     def setUp(self):
         self.client = Client()
 
@@ -42,8 +44,6 @@ class TestView(TestCase):
         soup = BeautifulSoup(reponse.content, 'html.parser')
         self.assertEqual(reponse.status_code, 200)
 
-        print(soup.text)
-
         # 3.3 main area에 포스트 2개의 제목이 존재한다.
         main_area = soup.find('div', id='main-area')
 
@@ -68,7 +68,7 @@ class TestView(TestCase):
         self.assertIn('About Me', navbar.text)
 
         # 2.3 첫 번째 포스트의 제목이 웹 브라우저 타이틀에 있다.
-        self.assertIn(post_001.title, soup.title)
+        self.assertIn(post_001.title, soup.title.text)
 
         # 2.4 첫 번째 포스트의 제목이 포스트 영역에 있다.
         main_area = soup.find('div', id='main-area')

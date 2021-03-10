@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from .models import Post
+from django.contrib.auth.models import User
 # Create your tests here.
 
 
@@ -8,6 +9,9 @@ class TestView(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.user_trump = User.objects.create(username="trump", password="something")
+        self.user_ohbama = User.objects.create(username="ohbama", password="something")
+        
 
     def test_post_list(self):
         # 1.1 포스트 목록 페이지를 가져온다.
@@ -29,10 +33,10 @@ class TestView(TestCase):
 
         # 3.1 포스트가 2개 있다면
         post_001 = Post.objects.create(
-            title='첫 번째 포스트 입니다.', content='Hello Django', )
+            title='첫 번째 포스트 입니다.', content='Hello Django', author=self.user_trump)
 
         post_002 = Post.objects.create(
-            title='두 번째 포스트 입니다.', content='Good Bye Django', )
+            title='두 번째 포스트 입니다.', content='Good Bye Django', author=self.user_ohbama)
 
         self.assertEqual(Post.objects.count(), 2)
 
@@ -49,9 +53,14 @@ class TestView(TestCase):
         # 3.4 아직 게시물이 없습니다 라는 문구는 더 이상 나타나지 않는다.
         self.assertNotIn('아직 게시물이 없습니다', main_area.text)
 
+        # 3.5 
+        self.assertIn(self.user_trump.username.upper(), main_area.text)
+        self.assertIn(self.user_ohbama.username.upper(), main_area.text)
+        
+
     def test_post_detail(self):
         # 1.1 포스트가 하나 있다.
-        post_001 = Post.objects.create(title='첫번째 포스트', content='첫번째 포스트 입니다')
+        post_001 = Post.objects.create(title='첫번째 포스트', content='첫번째 포스트 입니다', author=self.user_trump)
         # 1.2 그 포스트의 url은 /blog/1/ 이다.
         self.assertEqual(post_001.get_absolute_url(), '/blog/1/')
         # 2.1 첫번째 포스트의 url로 접근하면 정상적으로 작동한다(status code : 200)
@@ -75,6 +84,8 @@ class TestView(TestCase):
 
         # 2.6 첫 번째 포스트 내용이 포스트 영역 안에 있다.
         self.assertIn(post_001.content, post_area.text)
+
+        self.assertIn(self.user_trump.username.upper(), post_area.text)
 
     def navbar_test(self, soup):
         navbar = soup.nav

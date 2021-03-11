@@ -14,6 +14,10 @@ class TestView(TestCase):
         self.user_ohbama = User.objects.create(
             username="ohbama", password="something")
 
+        
+        self.user_trump.set_password("something")
+        self.user_trump.save()
+
         self.category_programming = Category.objects.create(
             name='programming', slug='programming')
         self.category_music = Category.objects.create(
@@ -38,6 +42,34 @@ class TestView(TestCase):
 
         self.post_003.tags.add(self.tag_python_kor)
         self.post_003.tags.add(self.tag_python)
+
+
+    def test_create_post(self):
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+
+        self.client.login(username="trump", password="something")
+        response = self.client.get('/blog/create_post/')
+
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertEqual('Create Post - Blog', soup.title.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Create New Post', main_area.text)
+
+        self.client.post(
+            '/blog/create_post/',
+            {
+                'title' : 'Post Form 만들기',
+                'content' : 'Post Form 페이지를 만듭시다.'
+            }
+        )
+
+        last_post = Post.objects.last()
+        self.assertEqual(last_post.title, "Post Form 만들기")
+        self.assertEqual(last_post.author.username, "trump")
+
 
 
     def test_tage_page(self):

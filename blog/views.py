@@ -20,6 +20,7 @@ class PostList(ListView):
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(
             category=None).count()
+        context['tags'] = Tag.objects.all()
         return context
 
 
@@ -31,13 +32,14 @@ class PostDetail(DetailView):
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(
             category=None).count()
+        context['tags'] = Tag.objects.all()
         return context
 
 
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
     fields = ['title', 'hook_text', 'content',
-        'head_image', 'file_upload', 'category']
+              'head_image', 'file_upload', 'category']
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -84,6 +86,7 @@ def category_page(request, slug):
             'categories': Category.objects.all(),
             'no_category_post_count': Post.objects.filter(category=None).count(),
             'category': category,
+            'tags': Tag.objects.all(),
         }
     )
 
@@ -100,6 +103,7 @@ def tag_page(request, slug):
             'categories': Category.objects.all(),
             'no_category_post_count': Post.objects.filter(category=None).count(),
             'tag': tag,
+            'tags': Tag.objects.all(),
         }
     )
 
@@ -107,7 +111,7 @@ def tag_page(request, slug):
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
     fields = ['title', 'hook_text', 'content',
-        'head_image', 'file_upload', 'category']
+              'head_image', 'file_upload', 'category']
 
     template_name = 'blog/post_update_form.html'
 
@@ -126,13 +130,13 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
             context['tags_str_default'] = '; '.join(tags_str_list)
         return context
 
-    def form_valid(self, form) :
+    def form_valid(self, form):
         response = super(PostUpdate, self).form_valid(form)
         self.object.tags.clear()
 
         tags_str = self.request.POST.get('tags_str')
 
-        if tags_str :
+        if tags_str:
             tags_str = tags_str.strip()
             tags_str = tags_str.replace(',', ';')
             tags_list = tags_str.split(';')
@@ -146,7 +150,6 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
                 self.object.tags.add(tag)
 
         return response
-
 
 
 # FBV 방식으로 구현

@@ -65,6 +65,23 @@
             </div>
           </div>
        <!-- end Categories Widget -->
+
+          <!-- tags Widget -->
+          <div class="card my-4" id="tags-card">
+            <h5 class="card-header">Tags</h5>
+            <div class="card-body">
+              <div class="row">
+                <ul>
+                  {% for tag in tags %}
+                  <li>
+                    <a href="{{ tag.get_absolute_url }}">{{ tag }} ({{ tag.post_set.count }})</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- end tag Widget -->
         </div>
       </div>
     </div>

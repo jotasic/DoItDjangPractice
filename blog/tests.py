@@ -159,6 +159,7 @@ class TestView(TestCase):
 
         self.navbar_test(soup)
         self.category_card_test(soup)
+        self.tag_card_test(soup)
         
         main_area = soup.find('div', id='main-area')
         self.assertIn(self.tag_hello.name, main_area.h1.text)
@@ -180,6 +181,7 @@ class TestView(TestCase):
         
         self.navbar_test(soup)
         self.category_card_test(soup)
+        self.tag_card_test(soup)
 
         main_area = soup.find('div', id='main-area')
         self.assertNotIn('아직 게시물이 없습니다', main_area.text)
@@ -229,6 +231,7 @@ class TestView(TestCase):
         # 2.2 포스트 목록 페이지와 똑같은 네비게이션 바가 있다.
         self.navbar_test(soup)
         self.category_card_test(soup)
+        self.tag_card_test(soup)
 
         # 2.3 첫 번째 포스트의 제목이 웹 브라우저 타이틀에 있다.
         self.assertIn(self.post_001.title, soup.title.text)
@@ -298,3 +301,14 @@ class TestView(TestCase):
         self.assertIn(
             f'{self.category_music.name} ({self.category_music.post_set.count()})', categories_card.text)
         self.assertIn(f'미분류 (1)', categories_card.text)
+
+
+    def tag_card_test(self, soup):
+        tags_card = soup.find('div', id='tags-card')
+        self.assertIn('Tags', tags_card.text)
+        self.assertIn(
+            f'{self.tag_python_kor.name} ({self.tag_python_kor.post_set.count()})', tags_card.text)
+        self.assertIn(
+            f'{self.tag_python.name} ({self.tag_python.post_set.count()})', tags_card.text)
+        self.assertIn(
+            f'{self.tag_hello.name} ({self.tag_hello.post_set.count()})', tags_card.text)

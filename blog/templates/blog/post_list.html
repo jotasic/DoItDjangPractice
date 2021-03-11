@@ -23,6 +23,15 @@
     {% if p.hook_text %}
     <h5 class="card-muted">{{ p.hook_text }}</h5>
     {% endif %}
+
+    {% if p.tags.exists %}
+    <i class="fas fa-tags"></i>
+      {% for tag in p.tags.all %}
+        <a href="{{ tag.get_absolute_url }}"><span class="badge badge-pill badge-ligth">{{ tag }}</span></a>
+      {% endfor %}
+      <br/>
+      <br/>
+    {% endif %}
     <p class="card-text">{{ p.content | truncatewords:45 }}</p>
     <a href="{{p.get_absolute_url}}" class="btn btn-primary">Read More &rarr;</a>
   </div>

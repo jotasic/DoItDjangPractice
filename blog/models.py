@@ -11,8 +11,14 @@ class Category(models.Model) :
     def __str__(self) :
         return self.name
 
+    def get_absolute_url(self):
+        return f'/blog/category/{self.slug}/'
+
+
+    # Admin 페이지에서 보이는 이름 재 정의
     class Meta:
         verbose_name_plural = 'Categories'
+
 
 class Post(models.Model):
     title = models.CharField(max_length=30)

@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Category, Tag
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
+from .forms import CommentForm
 
 # Create your views here.
 
@@ -33,6 +34,7 @@ class PostDetail(DetailView):
         context['no_category_post_count'] = Post.objects.filter(
             category=None).count()
         context['tags'] = Tag.objects.all()
+        context['comment_form'] = CommentForm
         return context
 
 
@@ -68,6 +70,25 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             return response
         else:
             return redirect('/blog/')
+
+
+def new_comment(request, pk) :
+    if request.user.is_authenticated :
+        post = get_object_or_404(Post, pk=pk)
+
+        if request.method == 'POST' :
+            comment_form = CommentForm(request.POST)
+
+            if comment_form.is_valid() :
+                comment = comment_form.save(commit=False)
+                comment.post = post
+                comment.author = request.user
+                comment.save()
+                return redirect(comment.get_absolute_url())
+        else :
+            return redirect(post.get_absolute_url())
+    else :
+        raise PermissionDenied
 
 
 def category_page(request, slug):

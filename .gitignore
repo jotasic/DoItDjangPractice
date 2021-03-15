@@ -137,3 +137,8 @@ dmypy.json
 
 # User Added
 _media/
+
+
+# docker
+.env.prod
+.env.prod.db

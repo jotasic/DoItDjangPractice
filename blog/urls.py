@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     # CBV 방식으로 구현
+    path('delete_comment/<int:pk>/', views.delete_comment),
     path('update_comment/<int:pk>/', views.CommentUpdate.as_view()),
     path('update_post/<int:pk>/', views.PostUpdate.as_view()),
     path('create_post/', views.PostCreate.as_view()),
